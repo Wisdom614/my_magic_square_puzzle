@@ -193,6 +193,15 @@ const MagicSquareGame = () => {
       const finalTime = Date.now() - gameStartTime;
       const score = calculateScore(finalTime, hintsUsed, attempts, currentLevel);
       
+      // Check for new achievements
+      const gameData = {
+        time: finalTime,
+        hintsUsed,
+        attempts,
+        difficulty: currentLevel,
+        won: true
+      };
+      
       // Update stats
       const newStats = {
         ...gameStats,
@@ -200,16 +209,49 @@ const MagicSquareGame = () => {
         gamesWon: gameStats.gamesWon + 1,
         totalTime: gameStats.totalTime + finalTime,
         bestTime: Math.min(gameStats.bestTime || Infinity, finalTime),
-        totalScore: gameStats.totalScore + score
+        totalScore: gameStats.totalScore + score,
+        difficultyStats: {
+          ...gameStats.difficultyStats,
+          [currentLevel]: {
+            ...gameStats.difficultyStats[currentLevel],
+            played: (gameStats.difficultyStats[currentLevel]?.played || 0) + 1,
+            won: (gameStats.difficultyStats[currentLevel]?.won || 0) + 1,
+            bestTime: Math.min(
+              gameStats.difficultyStats[currentLevel]?.bestTime || Infinity,
+              finalTime
+            )
+          }
+        }
       };
+      
+      // Check for achievements
+      const unlockedAchievements = checkAndUnlockAchievements(gameData, newStats);
+      setNewAchievements(unlockedAchievements);
+      
       setGameStats(newStats);
       saveGameStats(newStats);
+      
+      // Play victory sound
+      if (soundEnabled) {
+        soundManager.playGameWon();
+      }
+      
+      // Handle daily challenge completion
+      if (dailyChallenge?.isDaily) {
+        const today = new Date().toDateString();
+        saveDailyProgress(today, true, score);
+      }
       
       toast({
         title: "🎉 Congratulations!",
         description: `You solved it! Score: ${score.toLocaleString()}`,
       });
     } else {
+      // Play incorrect sound
+      if (soundEnabled) {
+        soundManager.playIncorrectPlacement();
+      }
+      
       toast({
         title: "Not quite right!",
         description: "Check your sums - some rows, columns, or diagonals don't match the magic constant.",
