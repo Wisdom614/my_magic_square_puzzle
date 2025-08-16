@@ -29,7 +29,7 @@ import DailyChallenge from './DailyChallenge';
 import AchievementPanel from './AchievementPanel';
 import GridSizeSelector from './GridSizeSelector';
 import { generateMagicSquare, shuffleArray, calculateScore } from '../utils/gameLogic';
-import { saveGameStats, getGameStats, checkAndUnlockAchievements } from '../utils/localStorage';
+import { saveGameStats, getGameStats, checkAndUnlockAchievements, saveDailyProgress } from '../utils/localStorage';
 import soundManager from '../utils/soundEffects';
 
 const MagicSquareGame = () => {
