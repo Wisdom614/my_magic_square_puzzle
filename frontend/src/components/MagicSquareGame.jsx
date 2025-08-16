@@ -287,11 +287,16 @@ const MagicSquareGame = () => {
     placeNumber(hintIndex, correctNumber);
     setHintsUsed(prev => prev + 1);
     
+    // Play hint sound
+    if (soundEnabled) {
+      soundManager.playHintUsed();
+    }
+    
     toast({
       title: "💡 Hint Used",
       description: `Placed ${correctNumber} in the correct position`,
     });
-  }, [gameActive, hintsUsed, isCompleted, currentNumbers, solution, placeNumber, toast]);
+  }, [gameActive, hintsUsed, isCompleted, currentNumbers, solution, placeNumber, soundEnabled, toast]);
 
   // Show solution
   const revealSolution = useCallback(() => {
