@@ -3,6 +3,7 @@ import { Card, CardContent, CardHeader, CardTitle } from './ui/card';
 import { Button } from './ui/button';
 import { Badge } from './ui/badge';
 import { Progress } from './ui/progress';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from './ui/tabs';
 import { useToast } from '../hooks/use-toast';
 import { 
   Play, 
@@ -14,14 +15,22 @@ import {
   Target,
   Grid3X3,
   Sparkles,
-  Award
+  Award,
+  Calendar,
+  Settings,
+  Volume2,
+  VolumeX
 } from 'lucide-react';
 import GameGrid from './GameGrid';
 import NumberPool from './NumberPool';
 import GameStats from './GameStats';
 import DifficultySelector from './DifficultySelector';
+import DailyChallenge from './DailyChallenge';
+import AchievementPanel from './AchievementPanel';
+import GridSizeSelector from './GridSizeSelector';
 import { generateMagicSquare, shuffleArray, calculateScore } from '../utils/gameLogic';
-import { saveGameStats, getGameStats } from '../utils/localStorage';
+import { saveGameStats, getGameStats, checkAndUnlockAchievements } from '../utils/localStorage';
+import soundManager from '../utils/soundEffects';
 
 const MagicSquareGame = () => {
   const { toast } = useToast();
