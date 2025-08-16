@@ -139,7 +139,12 @@ const MagicSquareGame = () => {
     }));
 
     setSelectedCell(null);
-  }, [currentNumbers, gameActive, isCompleted]);
+    
+    // Play sound effect
+    if (soundEnabled) {
+      soundManager.playPlaceNumber();
+    }
+  }, [currentNumbers, gameActive, isCompleted, soundEnabled]);
 
   // Remove number from cell
   const removeNumber = useCallback((cellIndex) => {
