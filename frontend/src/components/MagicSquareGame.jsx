@@ -159,7 +159,12 @@ const MagicSquareGame = () => {
     
     // Return number to pool
     setNumberPool(prev => [...prev, number].sort((a, b) => a - b));
-  }, [currentNumbers, gameActive, isCompleted]);
+    
+    // Play sound effect
+    if (soundEnabled) {
+      soundManager.playRemoveNumber();
+    }
+  }, [currentNumbers, gameActive, isCompleted, soundEnabled]);
 
   // Check if solution is correct
   const checkSolution = useCallback(() => {
