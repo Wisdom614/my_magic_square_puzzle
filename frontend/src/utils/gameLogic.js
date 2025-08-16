@@ -28,7 +28,7 @@ export const generateMagicSquare = (difficulty, size = 3) => {
 };
 
 // Get offset range based on difficulty
-const getDifficultyOffset = (difficulty) => {
+const getDifficultyOffset = (difficulty, seed = null) => {
   let minOffset, maxOffset;
   
   switch (difficulty) {
@@ -51,6 +51,12 @@ const getDifficultyOffset = (difficulty) => {
     default:
       minOffset = -55;
       maxOffset = 45;
+  }
+  
+  if (seed !== null) {
+    // Use seed for deterministic generation (for daily challenges)
+    const range = maxOffset - minOffset + 1;
+    return minOffset + (seed % range);
   }
   
   return Math.floor(Math.random() * (maxOffset - minOffset + 1)) + minOffset;
