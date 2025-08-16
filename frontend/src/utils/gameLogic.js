@@ -197,41 +197,6 @@ export const generateDailyChallenge = () => {
   };
 };
 
-// Enhanced difficulty offset with optional seed
-const getDifficultyOffset = (difficulty, seed = null) => {
-  let minOffset, maxOffset;
-  
-  switch (difficulty) {
-    case 'easy':
-      minOffset = -7;
-      maxOffset = 12;
-      break;
-    case 'normal':
-      minOffset = -55;
-      maxOffset = 45;
-      break;
-    case 'hard':
-      minOffset = -205;
-      maxOffset = 195;
-      break;
-    case 'master':
-      minOffset = -1005;
-      maxOffset = 995;
-      break;
-    default:
-      minOffset = -55;
-      maxOffset = 45;
-  }
-  
-  if (seed !== null) {
-    // Use seed for deterministic generation
-    const range = maxOffset - minOffset + 1;
-    return minOffset + (seed % range);
-  }
-  
-  return Math.floor(Math.random() * (maxOffset - minOffset + 1)) + minOffset;
-};
-
 // Preset puzzle configurations for specific challenges
 export const getPresetPuzzles = () => {
   return [
