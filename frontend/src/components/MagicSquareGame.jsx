@@ -72,8 +72,20 @@ const MagicSquareGame = () => {
   }, [gameActive, gameStartTime]);
 
   // Initialize new game
-  const initializeGame = useCallback(() => {
-    const { solution: newSolution, numbers, constant } = generateMagicSquare(currentLevel, gridSize);
+  const initializeGame = useCallback((challengeData = null) => {
+    let gameConfig;
+    
+    if (challengeData) {
+      // Use provided challenge data (daily challenge)
+      gameConfig = challengeData;
+      setDailyChallenge(challengeData);
+    } else {
+      // Generate new random game
+      gameConfig = generateMagicSquare(currentLevel, gridSize);
+      setDailyChallenge(null);
+    }
+    
+    const { solution: newSolution, numbers, constant } = gameConfig;
     
     setSolution(newSolution);
     setNumberPool(shuffleArray([...numbers]));
@@ -88,11 +100,16 @@ const MagicSquareGame = () => {
     setGameActive(true);
     setGameStartTime(Date.now());
     
+    // Play sound effect
+    if (soundEnabled) {
+      soundManager.playNewGame();
+    }
+    
     toast({
-      title: "New Game Started!",
+      title: challengeData ? "Daily Challenge Started!" : "New Game Started!",
       description: `Magic constant: ${constant}`,
     });
-  }, [currentLevel, gridSize, toast]);
+  }, [currentLevel, gridSize, soundEnabled, toast]);
 
   // Start game on level/size change
   useEffect(() => {
