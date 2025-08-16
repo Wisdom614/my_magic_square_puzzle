@@ -350,7 +350,7 @@ const MagicSquareGame = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-emerald-50 via-teal-50 to-cyan-50 p-4">
-      <div className="max-w-4xl mx-auto space-y-6">
+      <div className="max-w-6xl mx-auto space-y-6">
         {/* Header */}
         <Card className="border-0 shadow-2xl bg-white/80 backdrop-blur-sm">
           <CardHeader className="text-center pb-4">
@@ -368,149 +368,241 @@ const MagicSquareGame = () => {
           </CardHeader>
         </Card>
 
-        {/* Game Controls */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Left Column - Controls & Stats */}
-          <div className="space-y-4">
-            <DifficultySelector 
-              currentLevel={currentLevel} 
-              onLevelChange={setCurrentLevel}
-            />
-            
-            <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm">
-              <CardContent className="p-4 space-y-4">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Timer className="h-4 w-4 text-emerald-600" />
-                    <span className="font-medium">Time</span>
-                  </div>
-                  <Badge variant="outline" className="text-lg font-mono">
-                    {formatTime(elapsedTime)}
-                  </Badge>
-                </div>
+        {/* Main Content */}
+        <Tabs value={currentTab} onValueChange={setCurrentTab} className="w-full">
+          <TabsList className="grid w-full grid-cols-4 mb-6">
+            <TabsTrigger value="game" className="flex items-center gap-2">
+              <Grid3X3 className="h-4 w-4" />
+              Game
+            </TabsTrigger>
+            <TabsTrigger value="daily" className="flex items-center gap-2">
+              <Calendar className="h-4 w-4" />
+              Daily
+            </TabsTrigger>
+            <TabsTrigger value="achievements" className="flex items-center gap-2">
+              <Award className="h-4 w-4" />
+              Achievements
+            </TabsTrigger>
+            <TabsTrigger value="settings" className="flex items-center gap-2">
+              <Settings className="h-4 w-4" />
+              Settings
+            </TabsTrigger>
+          </TabsList>
+
+          {/* Game Tab */}
+          <TabsContent value="game" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+              {/* Left Column - Controls & Stats */}
+              <div className="space-y-4">
+                <DifficultySelector 
+                  currentLevel={currentLevel} 
+                  onLevelChange={setCurrentLevel}
+                />
                 
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Lightbulb className="h-4 w-4 text-amber-500" />
-                    <span className="font-medium">Hints</span>
-                  </div>
-                  <Badge variant="outline">
-                    {3 - hintsUsed} left
-                  </Badge>
-                </div>
-                
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2">
-                    <Target className="h-4 w-4 text-blue-500" />
-                    <span className="font-medium">Attempts</span>
-                  </div>
-                  <Badge variant="outline">
-                    {attempts}
-                  </Badge>
-                </div>
-              </CardContent>
-            </Card>
+                <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm">
+                  <CardContent className="p-4 space-y-4">
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Timer className="h-4 w-4 text-emerald-600" />
+                        <span className="font-medium">Time</span>
+                      </div>
+                      <Badge variant="outline" className="text-lg font-mono">
+                        {formatTime(elapsedTime)}
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Lightbulb className="h-4 w-4 text-amber-500" />
+                        <span className="font-medium">Hints</span>
+                      </div>
+                      <Badge variant="outline">
+                        {3 - hintsUsed} left
+                      </Badge>
+                    </div>
+                    
+                    <div className="flex items-center justify-between">
+                      <div className="flex items-center gap-2">
+                        <Target className="h-4 w-4 text-blue-500" />
+                        <span className="font-medium">Attempts</span>
+                      </div>
+                      <Badge variant="outline">
+                        {attempts}
+                      </Badge>
+                    </div>
+                  </CardContent>
+                </Card>
 
-            {/* Action Buttons */}
-            <div className="grid grid-cols-2 gap-2">
-              <Button 
-                onClick={checkSolution}
-                disabled={!gameActive || currentNumbers.includes(null)}
-                className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
-              >
-                <Trophy className="h-4 w-4 mr-2" />
-                Check
-              </Button>
-              
-              <Button 
-                onClick={giveHint}
-                disabled={!gameActive || hintsUsed >= 3}
-                variant="outline"
-                className="border-amber-200 text-amber-700 hover:bg-amber-50"
-              >
-                <Lightbulb className="h-4 w-4 mr-2" />
-                Hint
-              </Button>
-              
-              <Button 
-                onClick={resetGame}
-                variant="outline"
-                className="border-slate-200 text-slate-700 hover:bg-slate-50"
-              >
-                <RotateCcw className="h-4 w-4 mr-2" />
-                Reset
-              </Button>
-              
-              <Button 
-                onClick={revealSolution}
-                disabled={!gameActive}
-                variant="outline"
-                className="border-red-200 text-red-700 hover:bg-red-50"
-              >
-                <Eye className="h-4 w-4 mr-2" />
-                Solution
-              </Button>
-            </div>
-
-            <Button 
-              onClick={initializeGame}
-              className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
-            >
-              <Play className="h-4 w-4 mr-2" />
-              New Game
-            </Button>
-          </div>
-
-          {/* Center Column - Game Grid */}
-          <div className="space-y-4">
-            <GameGrid
-              gridSize={gridSize}
-              currentNumbers={currentNumbers}
-              solution={showSolution ? solution : null}
-              selectedCell={selectedCell}
-              onCellSelect={setSelectedCell}
-              onNumberPlace={placeNumber}
-              onNumberRemove={removeNumber}
-              isCompleted={isCompleted}
-              gameActive={gameActive}
-            />
-            
-            <NumberPool
-              numbers={numberPool}
-              selectedCell={selectedCell}
-              onNumberSelect={(number) => {
-                if (selectedCell !== null) {
-                  placeNumber(selectedCell, number);
-                }
-              }}
-            />
-          </div>
-
-          {/* Right Column - Stats */}
-          <div className="space-y-4">
-            <GameStats stats={gameStats} />
-            
-            {isCompleted && (
-              <Card className="border-0 shadow-lg bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
-                <CardContent className="p-6 text-center">
-                  <Award className="h-12 w-12 mx-auto mb-4" />
-                  <h3 className="text-xl font-bold mb-2">Puzzle Solved!</h3>
-                  <p className="text-emerald-100 mb-4">
-                    Time: {formatTime(elapsedTime)}
-                  </p>
+                {/* Action Buttons */}
+                <div className="grid grid-cols-2 gap-2">
                   <Button 
-                    onClick={initializeGame}
-                    variant="secondary"
-                    className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                    onClick={checkSolution}
+                    disabled={!gameActive || currentNumbers.includes(null)}
+                    className="bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-600 hover:to-teal-700"
                   >
-                    <Sparkles className="h-4 w-4 mr-2" />
-                    Play Again
+                    <Trophy className="h-4 w-4 mr-2" />
+                    Check
                   </Button>
+                  
+                  <Button 
+                    onClick={giveHint}
+                    disabled={!gameActive || hintsUsed >= 3}
+                    variant="outline"
+                    className="border-amber-200 text-amber-700 hover:bg-amber-50"
+                  >
+                    <Lightbulb className="h-4 w-4 mr-2" />
+                    Hint
+                  </Button>
+                  
+                  <Button 
+                    onClick={resetGame}
+                    variant="outline"
+                    className="border-slate-200 text-slate-700 hover:bg-slate-50"
+                  >
+                    <RotateCcw className="h-4 w-4 mr-2" />
+                    Reset
+                  </Button>
+                  
+                  <Button 
+                    onClick={revealSolution}
+                    disabled={!gameActive}
+                    variant="outline"
+                    className="border-red-200 text-red-700 hover:bg-red-50"
+                  >
+                    <Eye className="h-4 w-4 mr-2" />
+                    Solution
+                  </Button>
+                </div>
+
+                <Button 
+                  onClick={() => initializeGame()}
+                  className="w-full bg-gradient-to-r from-indigo-500 to-purple-600 hover:from-indigo-600 hover:to-purple-700"
+                >
+                  <Play className="h-4 w-4 mr-2" />
+                  New Game
+                </Button>
+              </div>
+
+              {/* Center Columns - Game Grid */}
+              <div className="lg:col-span-2 space-y-4">
+                <GameGrid
+                  gridSize={gridSize}
+                  currentNumbers={currentNumbers}
+                  solution={showSolution ? solution : null}
+                  selectedCell={selectedCell}
+                  onCellSelect={setSelectedCell}
+                  onNumberPlace={placeNumber}
+                  onNumberRemove={removeNumber}
+                  isCompleted={isCompleted}
+                  gameActive={gameActive}
+                />
+                
+                <NumberPool
+                  numbers={numberPool}
+                  selectedCell={selectedCell}
+                  onNumberSelect={(number) => {
+                    if (selectedCell !== null) {
+                      placeNumber(selectedCell, number);
+                    }
+                  }}
+                />
+              </div>
+
+              {/* Right Column - Stats */}
+              <div className="space-y-4">
+                <GameStats stats={gameStats} />
+                
+                {isCompleted && (
+                  <Card className="border-0 shadow-lg bg-gradient-to-br from-emerald-500 to-teal-600 text-white">
+                    <CardContent className="p-6 text-center">
+                      <Award className="h-12 w-12 mx-auto mb-4" />
+                      <h3 className="text-xl font-bold mb-2">Puzzle Solved!</h3>
+                      <p className="text-emerald-100 mb-4">
+                        Time: {formatTime(elapsedTime)}
+                      </p>
+                      <Button 
+                        onClick={() => initializeGame()}
+                        variant="secondary"
+                        className="bg-white/20 hover:bg-white/30 text-white border-white/30"
+                      >
+                        <Sparkles className="h-4 w-4 mr-2" />
+                        Play Again
+                      </Button>
+                    </CardContent>
+                  </Card>
+                )}
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Daily Challenge Tab */}
+          <TabsContent value="daily" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+              <div className="lg:col-span-2">
+                <DailyChallenge onStartChallenge={initializeGame} />
+              </div>
+              <div>
+                <GameStats stats={gameStats} />
+              </div>
+            </div>
+          </TabsContent>
+
+          {/* Achievements Tab */}
+          <TabsContent value="achievements" className="space-y-6">
+            <AchievementPanel 
+              gameStats={gameStats} 
+              newAchievements={newAchievements}
+            />
+          </TabsContent>
+
+          {/* Settings Tab */}
+          <TabsContent value="settings" className="space-y-6">
+            <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+              <GridSizeSelector
+                currentSize={gridSize}
+                onSizeChange={setGridSize}
+                disabled={gameActive}
+              />
+              
+              <Card className="border-0 shadow-lg bg-white/90 backdrop-blur-sm">
+                <CardHeader className="pb-3">
+                  <CardTitle className="text-lg font-semibold">
+                    Audio Settings
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2">
+                      {soundEnabled ? (
+                        <Volume2 className="h-5 w-5 text-emerald-600" />
+                      ) : (
+                        <VolumeX className="h-5 w-5 text-slate-400" />
+                      )}
+                      <span className="font-medium">Sound Effects</span>
+                    </div>
+                    <Button
+                      variant="outline"
+                      size="sm"
+                      onClick={() => {
+                        setSoundEnabled(!soundEnabled);
+                        soundManager.setEnabled(!soundEnabled);
+                        if (!soundEnabled) {
+                          soundManager.playButtonClick();
+                        }
+                      }}
+                    >
+                      {soundEnabled ? 'On' : 'Off'}
+                    </Button>
+                  </div>
+                  
+                  <p className="text-sm text-slate-600">
+                    Enable sound effects for number placement, hints, and game completion.
+                  </p>
                 </CardContent>
               </Card>
-            )}
-          </div>
-        </div>
+            </div>
+          </TabsContent>
+        </Tabs>
       </div>
     </div>
   );
