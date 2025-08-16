@@ -169,15 +169,61 @@ export const generateDailyChallenge = () => {
   const difficulties = ['easy', 'normal', 'hard', 'master'];
   const difficulty = difficulties[dayOfYear % difficulties.length];
   
-  // Set a pseudo-random seed based on the date
-  Math.seedrandom = (function() {
-    return function(seed) {
-      const x = Math.sin(seed) * 10000;
-      return x - Math.floor(x);
-    };
-  })();
+  // Create deterministic offset based on date
+  const dateString = today.toDateString();
+  let seed = 0;
+  for (let i = 0; i < dateString.length; i++) {
+    seed += dateString.charCodeAt(i);
+  }
   
-  return generateMagicSquare(difficulty);
+  // Generate magic square with deterministic seed
+  const baseSquare = [8, 1, 6, 3, 5, 7, 4, 9, 2];
+  const offset = getDifficultyOffset(difficulty, seed);
+  const solution = baseSquare.map(num => num + offset);
+  const magicConstant = solution[0] + solution[1] + solution[2];
+  
+  return {
+    solution,
+    numbers: [...solution],
+    constant: magicConstant,
+    difficulty,
+    isDaily: true
+  };
+};
+
+// Enhanced difficulty offset with optional seed
+const getDifficultyOffset = (difficulty, seed = null) => {
+  let minOffset, maxOffset;
+  
+  switch (difficulty) {
+    case 'easy':
+      minOffset = -7;
+      maxOffset = 12;
+      break;
+    case 'normal':
+      minOffset = -55;
+      maxOffset = 45;
+      break;
+    case 'hard':
+      minOffset = -205;
+      maxOffset = 195;
+      break;
+    case 'master':
+      minOffset = -1005;
+      maxOffset = 995;
+      break;
+    default:
+      minOffset = -55;
+      maxOffset = 45;
+  }
+  
+  if (seed !== null) {
+    // Use seed for deterministic generation
+    const range = maxOffset - minOffset + 1;
+    return minOffset + (seed % range);
+  }
+  
+  return Math.floor(Math.random() * (maxOffset - minOffset + 1)) + minOffset;
 };
 
 // Preset puzzle configurations for specific challenges
