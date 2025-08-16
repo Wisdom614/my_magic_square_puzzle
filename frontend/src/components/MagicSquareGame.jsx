@@ -53,8 +53,12 @@ const MagicSquareGame = () => {
   const [isCompleted, setIsCompleted] = useState(false);
   const [showSolution, setShowSolution] = useState(false);
   
-  // Stats
+  // Stats and features
   const [gameStats, setGameStats] = useState(getGameStats());
+  const [currentTab, setCurrentTab] = useState('game');
+  const [dailyChallenge, setDailyChallenge] = useState(null);
+  const [newAchievements, setNewAchievements] = useState([]);
+  const [soundEnabled, setSoundEnabled] = useState(true);
   
   // Timer effect
   useEffect(() => {
